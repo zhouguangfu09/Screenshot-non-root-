@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="android-screenshot-library" default="build">
+
+    <property file="local.properties" />
+    <property file="server.properties" />
+    <property file="build.properties" />
+    <property file="default.properties" />
+    <property name="bin.dir" location="bin"/>
+    <property name="unsigned.apk.file" location = "${bin.dir}/${ant.project.name}-unsigned.apk"/>
+    <property name="signed.apk.file" location = "${bin.dir}/${ant.project.name}-signed.apk"/>
+    <property name="release.apk.file" location = "${bin.dir}/${ant.project.name}-release.apk"/>
+    <property name="apk.file" location = "${bin.dir}/${ant.project.name}.apk"/>
+
+    <target name="init">
+        <mkdir dir="${out.classes.absolute.dir}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="bin" failonerror="false"/>
+    </target>
+
+    <path id="android.antlibs">
+        <fileset dir="${android.sdk.home.dir}/tools/lib/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <property name="android.rules" value="${android.sdk.home.dir}/platforms/android-7/templates/android_rules.xml" />
+
+    <property name="sdk.dir" value="${android.sdk.home.dir}"/>
+    <taskdef name="setup" classname="com.android.ant.SetupTask" classpathref="android.antlibs" />
+    <setup import="false"/>
+
+    <import file="${android.rules}"/>
+
+    <!-- Compiles this project's .java files into .class files. -->
+    <!-- copied from android_rules.xml to override the encoding -->
+    <target name="compile" depends="init, -resource-src, -aidl" description="Compiles project's .java files into .class files">
+        <!-- If android rules are used for a test project, its classpath should include
+             tested project's location -->
+        <condition property="extensible.classpath" value="${tested.project.absolute.dir}/bin/classes" else=".">
+            <isset property="tested.project.absolute.dir" />
+        </condition>
+        <javac encoding="utf-8" target="1.5" debug="true" extdirs="" destdir="${out.classes.absolute.dir}" bootclasspathref="android.target.classpath" verbose="${verbose}" >
+            <src path="${source.absolute.dir}" />
+            <src path="${gen.absolute.dir}" />
+            <classpath>
+                <fileset dir="${external.libs.absolute.dir}" includes="*.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="build" description="Build apk" depends="release">
+        <copy file="${release.apk.file}" tofile="${apk.file}" failonerror="false"/>
+    </target>
+    
+    <!--ANALYSIS-->
+
+    <path id="findbugs.dir.jars">
+        <fileset dir="${findbugs.home.dir}/lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <path id="checkstyle.home.id">
+        <fileset dir="${checkstyle.home.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <path id="pmd.home.id">
+        <fileset dir="${pmd.home.dir}/lib">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+    <target name="analysis" description="-> static code analysis" depends="build">
+        <taskdef resource="checkstyletask.properties" classpathref="checkstyle.home.id" />
+        <checkstyle config="analysis/checkstyle.xml" failureProperty="checkstyle.failure" failOnViolation="false" classpathref="checkstyle.home.id">
+            <classpath path="${lib-classes-folder}" />
+            <classpath path="${out.dir}" />
+            <formatter type="xml" tofile="gen/checkstyle_report.xml" />
+            <fileset dir="${source.dir}" includes="**/*.java" />
+        </checkstyle>
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.home.id" />
+        <pmd shortFilenames="false" targetjdk="1.6" rulesetfiles="analysis/pmd.xml">
+            <formatter type="xml" toFile="gen/pmd_report.xml" />
+            <fileset dir="${source.dir}" includes="**/*.java" excludes="com/badlogic/**" />
+        </pmd>
+
+        <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpathref="pmd.home.id" />
+        <cpd minimumTokenCount="100" outputFile="gen/cpd_report.xml" format="xml">
+            <fileset dir="${source.dir}" includes="**/*.java" />
+        </cpd>
+
+        <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="findbugs.dir.jars" />
+        <findbugs home="${findbugs.home.dir}" output="xml" outputFile="gen/findbugs_report.xml" excludefilter="analysis/findbugs_exclude.xml">
+            <auxclasspath path="${android.jar}" />
+            <sourcePath path="${source.dir}" />
+            <class location="${out.dir}" />
+        </findbugs>
+    </target>
+
+    <target name="javadoc" depends="compile" description="--> builds javadoc">
+        <mkdir dir="javadoc" />
+        <javadoc destdir="javadoc" author="false" version="false">
+            <packageset dir="src" defaultexcludes="yes">
+                <include name="**" />
+            </packageset>
+            <doctitle>
+                <![CDATA[<h1>Android Screenshot Library</h1>]]></doctitle>
+        </javadoc>
+    </target>
+
+</project>
