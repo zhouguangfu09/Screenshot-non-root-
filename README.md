@@ -18,14 +18,13 @@
 ###实时显示
 目前分辨率较低的手机可以达到4-5帧，还有很大的优化空间。
 
-1. ![PC Server](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/3.png)
+1. 下图是在activity界面下拉通知栏，然后右侧DDMS显示heap里面的内存分配变化，基本变化不大，还是比较稳定的。
 
-	上图是在activity界面下拉通知栏，然后右侧DDMS显示heap里面的内存分配变化，基本变化不大，还是比较稳定的。
+	![PC Server](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/3.png)
 
-2. ![Android Screenshot](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/4.png)
+2. 下图是两个手机连接PC时手机端的屏幕共享，左图是Sony MT15i，安卓4.04的系统右图是Galaxy S I9000,安卓4.2.2的系统。目前只有两部手机，测试的话没有大的问题，多部手机的话PC端的处理方式类似，基本无需改动代码。
 
-	上图是两个手机连接PC时手机端的屏幕共享，左图是Sony MT15i，安卓4.04的系统
-右图是Galaxy S I9000,安卓4.2.2的系统。目前只有两部手机，测试的话没有大的问题，多部手机的话PC端的处理方式类似，基本无需改动代码。
+	![Android Screenshot](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/4.png)
 
 ###开启截屏服务
 非root手机的屏幕共享问题。按下属步骤操作即可：
