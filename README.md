@@ -4,7 +4,7 @@
 ***
 ##主要包括Android手机端和PC端
 ###手机客户端（Client）
-目前界面比较
+目前界面比较简单。
 
 ![Android Client](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/1.png)
 ***
