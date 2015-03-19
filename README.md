@@ -18,7 +18,7 @@
 ###实时显示
 目前分辨率较低的手机可以达到4-5帧，还有很大的优化空间。
 
-1. ![PC Server](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/3.png)上图是在activity界面下拉通知栏，然后右侧DDMS显示heap里面的内存分配变化，基本变化不大，还是比较稳定的（手动释放了一些内存，之前可能由于android的GC没有及时回收）。
+1. ![PC Server](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/3.png)上图是在activity界面下拉通知栏，然后右侧DDMS显示heap里面的内存分配变化，基本变化不大，还是比较稳定的。
 
 2. ![Android Screenshot](https://github.com/zhouguangfu09/Screenshot-non-root-/blob/master/png/4.png)
 上图是两个手机连接PC时手机端的屏幕共享，左图是Sony MT15i，安卓4.04的系统
@@ -36,7 +36,7 @@
 \# exit
 `
 
-###目前存在的问题
+###程序优化方向
 1. 可以借助PC上的VNC远程桌面的思路，每次只传送变化的数据，这样可以大大节省带宽。在屏幕内容变化不是太大的情况下可以达到局域网内的手机屏幕实时显示。
 
 2. 利用jpeg压缩的C library， 在local service截取到framebuffer数据后快速进行压缩，这样在传输给app的client端，然后app的client不再对framebuffer数据进行bitmap封装（这个过程在java层是比较耗时的），然后立即发送给PC端的server端，这样会进一步加快screenshot的传输速度。
